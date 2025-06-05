@@ -1,5 +1,0 @@
-# -*- sh -*-
-
-# Options to use for auto-mounting devices detected with an hfsplus filesystem 
-AUTOMOUNT_OPTS=ro,users,relatime
-
