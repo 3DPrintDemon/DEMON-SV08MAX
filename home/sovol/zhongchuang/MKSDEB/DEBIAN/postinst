@@ -1,0 +1,47 @@
+#! /bin/bash
+
+
+#客户端启动服务
+chmod +x /home/sovol/zhongchuang/build/start.sh
+
+#led寄存器
+chmod +x /home/sovol/zhongchuang/build/io
+
+#续打脚本
+chmod +x /home/sovol/clear_plr.sh
+chmod +x /home/sovol/plr.sh
+chmod +x /home/sovol/zhongchuang/build/script.py
+
+chmod 777 /home/mount.log
+echo '' > /home/mount.log
+
+#自动卸载挂载点
+chmod +x /usr/bin/makerbase-automount
+
+#线刷屏幕固件
+chmod +x /home/sovol/uart
+
+echo "D /home/sovol/printer_data/temp 0755 sovol sovol 0" > /tmp/moonraker_temp.conf
+sudo mv /tmp/moonraker_temp.conf /etc/tmpfiles.d/
+systemd-tmpfiles --create
+
+#自动获取摄像头服务
+# chmod +x /home/sovol/auto-webcam-id.sh
+# systemctl enable makerbase-webcam.service
+
+#soc更新mcu
+# bash /root/mcu_update.sh
+
+#重新编译klipper_mcu
+# cd /home/sovol/klipper/
+# sudo service klipper stop
+# make flash
+# sudo service klipper start
+
+systemctl restart klipper
+systemctl restart moonraker
+
+#删除本地文件
+# rm /home/sovol/printer_data/build/finishedGuide
+# rm /home/sovol/printer_data/gcodes/!(sda1)
+

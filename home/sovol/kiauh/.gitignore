@@ -1,0 +1,12 @@
+.idea
+.vscode
+.pytest_cache
+.jupyter
+*.ipynb
+*.ipynb_checkpoints
+*.tmp
+__pycache__
+.kiauh-env
+*.code-workspace
+*.iml
+kiauh.cfg

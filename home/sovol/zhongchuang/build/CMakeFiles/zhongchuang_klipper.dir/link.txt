@@ -1,0 +1,1 @@
+/usr/bin/c++  -std=c++17 -rdynamic CMakeFiles/zhongchuang_klipper.dir/main.cpp.o -o zhongchuang_klipper  src/libsrc.a -lpthread -lboost_system -lwpa_client -lcurl -lzip 

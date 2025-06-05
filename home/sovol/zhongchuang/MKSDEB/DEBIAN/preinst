@@ -1,0 +1,39 @@
+#! /bin/bash
+
+UPDATE_PATH="/home/sovol/printer_data/gcodes/sda1/UPDATE_DIR"
+
+
+if [ ! -e "/home/sovol/cache_cleaned" ]; then
+    if [ -d "/home/sovol/zhongchuang/.git" ]; then
+        rm -rf /home/sovol/zhongchuang/.git
+    fi
+    if [ -e "/home/sovol/.gitconfig" ]; then
+        rm -rf /home/sovol/.gitconfig
+    fi
+    if [ -e "/home/sovol/.git-credentials" ]; then
+        rm -rf /home/sovol/.git-credentials
+    fi
+    if [ -e "/home/sovol/.bash_history" ]; then
+        rm -rf /home/sovol/.bash_history
+    fi
+    touch /home/sovol/cache_cleaned
+fi
+
+
+
+# if [ -e ${UPDATE_PATH}/printer.cfg ]; then
+#     cp -f ${UPDATE_PATH}/printer.cfg /home/sovol/klipper_config/
+#     touch "${UPDATE_PATH}/successed_cp_printer_conf$(date +%Y-%m-%d_%H-%M-%S).mark"
+# else
+#     touch "${UPDATE_PATH}/no_printer_conf$(date +%Y-%m-%d_%H-%M-%S).mark"
+# fi
+
+
+# if [ -e ${UPDATE_PATH}/printer.cfg.bak ]; then
+#     cp -f ${UPDATE_PATH}/printer.cfg.bak /home/sovol/zhongchuang/
+#     touch "${UPDATE_PATH}/successed_cp_printer_conf_bak$(date +%Y-%m-%d_%H-%M-%S).mark"
+# else
+#     touch "${UPDATE_PATH}/no_printer_conf_bak$(date +%Y-%m-%d_%H-%M-%S).mark"
+# fi
+
+    

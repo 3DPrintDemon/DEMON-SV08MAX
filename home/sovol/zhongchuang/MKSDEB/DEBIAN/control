@@ -1,0 +1,8 @@
+Package: zhongchuang-Client
+Version: 0.1.0
+Architecture: arm64
+Uploaders: Makerbase
+Maintainer: Makerbase
+Section: devel
+Essential: no
+Description: Just for zhongchuang 3D printer

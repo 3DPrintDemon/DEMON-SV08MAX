@@ -1,0 +1,12 @@
+[Unit]
+Description=get-mcu-id
+After=network.target
+Wants=udev.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=bash /root/mcu-id.sh
+

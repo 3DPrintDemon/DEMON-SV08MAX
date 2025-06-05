@@ -1,0 +1,95 @@
+#!/bin/sh
+
+mediadir="/home/sovol/printer_data/gcodes/sda1"
+target_dir="/home/sovol/printer_data/gcodes"
+
+log_dir="/home/sovol/printer_data/logs"
+usb_log_dir="$mediadir/log_backup"
+trigger_file="$mediadir/copy_logs.trigger"
+
+# 将所有输出重定向到 /home/mount.log
+exec >> /home/mount.log 2>&1
+
+if [ -z "$1" ]; then
+    echo "Error: No device argument provided"
+    exit 1
+fi
+
+dev="/dev/${1##*/}"
+
+if ! [ -b "$dev" ]; then
+    if mountpoint -q "$mediadir"; then
+        echo "$dev device removed, unmounting and cleaning $mediadir"
+
+        if ! umount -lf "$mediadir"; then
+            echo "Error unmounting $mediadir, trying to force unmount..."
+            fuser -k "$mediadir"
+            umount -lf "$mediadir"
+        fi
+    else
+        echo "Device $dev is no longer available or is not a block device."
+    fi
+
+    # Cleanup unmounted directories
+    for dir in "$target_dir"/*; do
+        if [ -d "$dir" ] && ! mountpoint -q "$dir" && ! findmnt -rno TARGET "$dir"; then
+            if [ -z "$(ls -A "$dir")" ]; then
+                echo "Removing unused directory: $dir"
+                rmdir "$dir"
+            fi
+        fi
+    done
+
+    exit 0
+fi
+
+echo "Executing mount $1"
+mkdir -p "$mediadir"
+sudo mount -t auto -o uid=sovol -o gid=sovol -o iocharset=utf8 "$dev" "$mediadir"
+
+# 检测触发文件并拷贝日志
+if [ -f "$trigger_file" ]; then
+    echo "检测到触发文件，开始拷贝日志..."
+
+    mkdir -p "$usb_log_dir"
+    cp -v "$log_dir"/*.log "$usb_log_dir/" 2>> /home/mount.log
+
+    echo "日志拷贝完成，删除触发文件"
+    rm -f "$trigger_file"
+else
+    echo "未检测到触发文件，跳过日志拷贝"
+fi
+
+
+# Path to the wifi.cfg file
+CONFIG_FILE="/home/sovol/printer_data/gcodes/sda1/wifi.cfg"
+
+# Check if the config file exists
+if [ -f "$CONFIG_FILE" ]; then
+    # Extract ssid and password from the config file
+    SSID=$(grep 'ssid' $CONFIG_FILE | cut -d'=' -f2 | tr -d '\r\n')
+    PASSWORD=$(grep 'password' $CONFIG_FILE | cut -d'=' -f2 | tr -d '\r\n')
+
+    # Check if you're already connected to the specified SSID
+    CURRENT_SSID=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d':' -f2)
+    
+    if [ "$CURRENT_SSID" == "$SSID" ]; then
+        echo "Already connected to $SSID."
+    else
+        # Connect to the WiFi network
+        nmcli dev wifi connect "$SSID" password "$PASSWORD"
+
+        # Check if the connection was successful
+        if [ $? -eq 0 ]; then
+            echo "Connected to $SSID successfully."
+        else
+            echo "Failed to connect to $SSID."
+        fi
+    fi
+else
+    echo "Config file not found: $CONFIG_FILE"
+    # Exit with a non-zero status to indicate failure
+    # exit 1
+fi
+
+
