@@ -1,0 +1,14 @@
+[Unit]
+Description=Automount USB for device %I
+After=moonraker.service
+Requires=moonraker.service
+
+[Service]
+Type=forking
+GuessMainPID=no
+ExecStartPre=/bin/sleep 2
+ExecStart=/usr/bin/makerbase-automount %I
+
+[Install]
+WantedBy=multi-user.target
+
