@@ -70,10 +70,10 @@ class RunoutHelper:
             # when the sensor is disabled
             return
         if not is_filament_present:
-            self.gcode.run_script_from_command('SET_PIN PIN=green_led VALUE=0.00')
+            self.gcode.run_script_from_command('SET_PIN PIN=LED_Green VALUE=0.00')
             self.gcode.run_script_from_command('SET_GCODE_VARIABLE MACRO=variables VARIABLE=stop_feeding VALUE=True')
         else:
-            self.gcode.run_script_from_command('SET_PIN PIN=green_led VALUE=1.00')
+            self.gcode.run_script_from_command('SET_PIN PIN=LED_Green VALUE=1.00')
             self.gcode.run_script_from_command('SET_GCODE_VARIABLE MACRO=variables VARIABLE=stop_feeding VALUE=False')
             self.gcode.run_script_from_command('_AUTO_FEED_MESSAGE')
             self.gcode.run_script_from_command('FEED_LOOP') ##############################################################
